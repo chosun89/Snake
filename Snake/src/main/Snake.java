@@ -18,9 +18,9 @@ public class Snake {
 		Body = new LinkedList<>();
 		BodySet = new HashSet<>();
 
-		Point p1 = new Point(Const.START_X - Const.Block, Const.START_Y);
-		Point p2 = new Point(Const.START_X - 2*Const.Block, Const.START_Y);
-		Point p3 = new Point(Const.START_X - 3*Const.Block, Const.START_Y);
+		Point p1 = new Point(Const.START_X - 1, Const.START_Y);
+		Point p2 = new Point(Const.START_X - 2, Const.START_Y);
+		Point p3 = new Point(Const.START_X - 3, Const.START_Y);
 		/*Point p4 = new Point(Const.START_X - 4*Const.Block, Const.START_Y);
 		Point p5 = new Point(Const.START_X - 5*Const.Block, Const.START_Y);
 		*/
@@ -41,42 +41,42 @@ public class Snake {
 		Direction = Const.DIRECTION.RIGHT;
 	}
 	
-	void moveHead(Const.DIRECTION d) {
+	// true means food is eaten, so elongate
+	void move(boolean food) {
 		
-		if (d == Const.DIRECTION.UP) {
-			Head.y -= Const.Block;
-		}
-		else if (d == Const.DIRECTION.DOWN) {
-			Head.y += Const.Block;
-		}
-		else if (d == Const.DIRECTION.LEFT) {
-			Head.x -= Const.Block;
-		}
-		else {
-			Head.x += Const.Block;
-		}
-	}
-
-	void moveBody(boolean elongate) {
 		Body.offerFirst(new Point(Head.x, Head.y));
 		BodySet.add(new Point(Head.x, Head.y));
 		Point last;
-		if (!elongate) {
+		if (!food) {
 			last = Body.pollLast();
 			BodySet.remove(last);
 		}
-		
 	}
-
-	void elongate() {
+	
+	void moveHead() {
+		/// move head after moving body
+		if (Direction == Const.DIRECTION.UP) {
+			Head.y--;
+		}
+		else if (Direction == Const.DIRECTION.DOWN) {
+			Head.y++;
+		}
+		else if (Direction == Const.DIRECTION.LEFT) {
+			Head.x--;
+		}
+		else {
+			Head.x++;
+		}
+		
 	}
 
 	void setDirection(Const.DIRECTION d) {
 		Direction = d;
 	}
-
-	Point getHead() { return Head; }
 	Deque<Point> getBody() { return Body; }
 	Set<Point> getBodySet() { return BodySet; }
 	Const.DIRECTION getDirection() { return Direction; }
+	Point getHead() { return Head; }
+	Point getFirst() { return Body.peekFirst(); }
+	Point getTail() { return Body.peekLast(); }
 }
