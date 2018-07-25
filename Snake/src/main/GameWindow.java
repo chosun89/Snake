@@ -74,11 +74,11 @@ public class GameWindow extends JPanel implements ActionListener{
 		g.setColor(Color.GREEN);
 		Deque<Point> body = Snake.getBody();
 		for (Point p : body) {
-			g.fillRect(p.x*Const.Block, p.y*Const.Block, Const.Block,  Const.Block);
+			g.fillRect(p.x*Const.Block, p.y*Const.Block, Const.Block-1,  Const.Block-1);
 		}
 
 		g.setColor(Color.RED);
-		g.fillRect(Snake.getHead().x*Const.Block, Snake.getHead().y*Const.Block, Const.Block, Const.Block);
+		g.fillRect(Snake.getHead().x*Const.Block, Snake.getHead().y*Const.Block, Const.Block-1, Const.Block-1);
 		
 		Food Food = World.getFood();
 		g.setColor(Food.getColor());

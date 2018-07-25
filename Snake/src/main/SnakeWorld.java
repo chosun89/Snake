@@ -31,9 +31,9 @@ public class SnakeWorld{
 
 		Snake = new Snake();
 		Food = new Food();
-		Food.x = Const.START_X - 4;
-		Food.y = Const.START_Y;
-		//randomFood();
+//		Food.x = Const.START_X - 4;
+//		Food.y = Const.START_Y;
+		randomFood();
 		
 		SNAKE_STATE = Const.SNAKE_STATE.NORMAL;
 		GameOver = false;
@@ -83,7 +83,7 @@ public class SnakeWorld{
 				q.offer(new Point(x,y+1));
 			}
 		}
-		printBoard();
+		//printBoard();
 	}
 	
 	public boolean isValid(int x, int y) {
@@ -94,7 +94,6 @@ public class SnakeWorld{
 	// if bfs is true, Snake moves in bfs manner
 	void move(boolean bfs) {
 		int x, y;
-		bfs();
 		Point head = Snake.getHead();
 		x = head.x;
 		y = head.y;
@@ -112,10 +111,10 @@ public class SnakeWorld{
 		else if (SNAKE_STATE == Const.SNAKE_STATE.EAT) {
 			Snake.move(true);
 			randomFood();
-
 			SNAKE_STATE = Const.SNAKE_STATE.NORMAL;
 		}
 		
+		bfs();
 		// head must be moved after moving body
 		if (bfs){
 			head = Snake.getHead();
