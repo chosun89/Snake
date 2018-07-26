@@ -2,12 +2,12 @@ package main;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Deque;
 
@@ -21,23 +21,34 @@ public class GameWindow extends JPanel implements ActionListener{
 
 	private SnakeWorld World;
 	private Timer Timer;
-	private static final int Ticks = 100;
 
 	GameWindow() {
 		World = new SnakeWorld();
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(Const.BOARD_WIDTH, Const.BOARD_HEIGHT));
-		//addKeyListener(new KeyboardInput());
 		setFocusable(true);
-
-		Timer = new Timer(Ticks, this);
-		Timer.start();
+		
 		
 		getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0),"space" );
 		getActionMap().put("space", new KeyAction("space"));
 
 		getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),"enter" );
 		getActionMap().put("enter", new KeyAction("enter"));
+
+		getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0),"left" );
+		getActionMap().put("left", new KeyAction("left"));
+
+		getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0),"right" );
+		getActionMap().put("right", new KeyAction("right"));
+
+		getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0),"up" );
+		getActionMap().put("up", new KeyAction("up"));
+
+		getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0),"down" );
+		getActionMap().put("down", new KeyAction("down"));
+
+		Timer = new Timer(Const.Ticks, this);
+		Timer.start();
 	}
 
 	private class KeyAction extends AbstractAction {
@@ -59,7 +70,22 @@ public class GameWindow extends JPanel implements ActionListener{
 			if (Key == "enter") {
 				if (World.isGameOver()) {
 					World = new SnakeWorld();
+					Timer.start();
 				}
+			}
+			
+			Const.DIRECTION curr = World.getSnakeDirection();
+			if (Key == "up" && curr != Const.DIRECTION.DOWN) {
+				World.setSnakeDirection(Const.DIRECTION.UP);
+			}
+			if (Key == "down" && curr != Const.DIRECTION.UP) {
+				World.setSnakeDirection(Const.DIRECTION.DOWN);
+			}
+			if (Key == "left" && curr != Const.DIRECTION.RIGHT) {
+				World.setSnakeDirection(Const.DIRECTION.LEFT);
+			}
+			if (Key == "right" && curr != Const.DIRECTION.LEFT) {
+				World.setSnakeDirection(Const.DIRECTION.RIGHT);
 			}
 		}
 		
@@ -67,7 +93,6 @@ public class GameWindow extends JPanel implements ActionListener{
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		
 		
 		Snake Snake = World.getSnake();
 
@@ -78,12 +103,17 @@ public class GameWindow extends JPanel implements ActionListener{
 		}
 
 		g.setColor(Color.RED);
-		g.fillRect(Snake.getHead().x*Const.Block, Snake.getHead().y*Const.Block, Const.Block-1, Const.Block-1);
+		g.fillRect(Snake.getHead().x*Const.Block, Snake.getHead().y*Const.Block -1 , Const.Block -1, Const.Block-1);
 		
 		Food Food = World.getFood();
 		g.setColor(Food.getColor());
 		g.fillRect((int)Food.getX()*Const.Block, (int)Food.getY()*Const.Block, Const.Block, Const.Block);
 		
+		String Score = World.getScore();
+		g.setColor(Color.WHITE);
+		g.setFont(new Font(Font.DIALOG, Font.BOLD, 30));
+		g.drawString(Score, Const.Block*2, Const.Block);
+
 		Toolkit.getDefaultToolkit().sync();
 	}
 	
@@ -96,30 +126,11 @@ public class GameWindow extends JPanel implements ActionListener{
 		else if (World.isPaused()) {
 		}
 		else {
-			World.move(true);
+			World.move();
 			repaint();
 		}
 	}
 
-//	private class KeyboardInput extends KeyAdapter {
-//		@Override
-//		public void keyPressed(KeyEvent e) {
-//			int key = e.getKeyCode();
-//			if(key == KeyEvent.VK_LEFT && World.getSnakeDirection() != Const.DIRECTION.RIGHT) {
-//				World.setSnakeDirection(Const.DIRECTION.LEFT);
-//			}
-//			if(key == KeyEvent.VK_RIGHT && World.getSnakeDirection() != Const.DIRECTION.LEFT) {
-//				World.setSnakeDirection(Const.DIRECTION.RIGHT);
-//			}
-//			if(key == KeyEvent.VK_UP && World.getSnakeDirection() != Const.DIRECTION.DOWN) {
-//				World.setSnakeDirection(Const.DIRECTION.UP);
-//			}
-//			if(key == KeyEvent.VK_DOWN && World.getSnakeDirection() != Const.DIRECTION.UP) {
-//				World.setSnakeDirection(Const.DIRECTION.DOWN);
-//			}
-
-//		}
-// 	}
 	
 	
 	

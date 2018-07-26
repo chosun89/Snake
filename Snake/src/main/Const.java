@@ -3,6 +3,7 @@ package main;
 import java.awt.Color;
 
 public class Const {
+	static final int Ticks = 20; // Ticks inv. prop. to gamespeed
 	static final int Block = 25;
 	static final int BOARD_HEIGHT = 950; 
 	static final int BOARD_WIDTH = 950; 

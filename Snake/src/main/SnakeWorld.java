@@ -13,9 +13,11 @@ public class SnakeWorld{
 	Const.SNAKE_STATE SNAKE_STATE;
 	Const.DIRECTION dirArr[] = { Const.DIRECTION.RIGHT, Const.DIRECTION.UP, 
 			Const.DIRECTION.LEFT, Const.DIRECTION.DOWN };
+	
+	boolean Bfs = true; // set true for bfs Snake
 	boolean GameOver;
 	boolean Pause;
-	int Score;
+	Integer Score;
 
 	SnakeWorld() {
 		Board = new Node[Const.ROWS][Const.COLS];
@@ -38,7 +40,7 @@ public class SnakeWorld{
 		SNAKE_STATE = Const.SNAKE_STATE.NORMAL;
 		GameOver = false;
 		Pause = false;
-		Score = 0;
+		Score = new Integer(0);
 	}
 	
 	void bfs() {
@@ -92,7 +94,7 @@ public class SnakeWorld{
 	}
 
 	// if bfs is true, Snake moves in bfs manner
-	void move(boolean bfs) {
+	void move() {
 		int x, y;
 		Point head = Snake.getHead();
 		x = head.x;
@@ -111,12 +113,13 @@ public class SnakeWorld{
 		else if (SNAKE_STATE == Const.SNAKE_STATE.EAT) {
 			Snake.move(true);
 			randomFood();
+			Score++;
 			SNAKE_STATE = Const.SNAKE_STATE.NORMAL;
 		}
 		
 		bfs();
 		// head must be moved after moving body
-		if (bfs){
+		if (Bfs){
 			head = Snake.getHead();
 			x = head.x;
 			y = head.y;
@@ -155,18 +158,6 @@ public class SnakeWorld{
 		y = Snake.Head.y;
 		Board[y][x].Val = Const.BOARD_VALUE.HEAD;
 	}
-
-	void printBoard() {
-		for (int i = 0; i < Const.ROWS; i++) {
-			for (int j = 0; j < Const.COLS; j++) {
-				//System.out.print(Board[i][j].toString());
-				System.out.print(Board[i][j].getDist() + " ");
-			}
-			System.out.println();
-		}
-		System.out.println();
-	}
-	
 	// finds a new location for Food AND updates its location on the Board
 	void randomFood() {
 		Random rand = new Random(System.currentTimeMillis());
@@ -219,4 +210,16 @@ public class SnakeWorld{
 	Snake getSnake() { return Snake; }
 	Food getFood() { return Food; }
 	boolean isPaused() { return Pause; }
+	String getScore() { return Integer.toString(Score); }
+	void printBoard() {
+		for (int i = 0; i < Const.ROWS; i++) {
+			for (int j = 0; j < Const.COLS; j++) {
+				//System.out.print(Board[i][j].toString());
+				System.out.print(Board[i][j].getDist() + " ");
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
+	
 }
