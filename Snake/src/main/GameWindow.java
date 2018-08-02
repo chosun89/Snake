@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.text.DecimalFormat;
 import java.util.Deque;
 
 import javax.swing.AbstractAction;
@@ -23,12 +24,17 @@ public class GameWindow extends JPanel implements ActionListener{
 	private Timer Timer;
 
 	GameWindow() {
-		World = new SnakeWorld();
 		setBackground(Color.BLACK);
 		setPreferredSize(new Dimension(Const.BOARD_WIDTH, Const.BOARD_HEIGHT));
 		setFocusable(true);
-		
-		
+
+		if (Const.TRAINING_MODE) {
+			World = new SnakeWorld(Const.NUMBER_OF_POPULATIONS, Const.SNAKES_PER_POP);
+		}
+	
+		else { 
+			World = new SnakeWorld();
+		}
 		getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0),"space" );
 		getActionMap().put("space", new KeyAction("space"));
 
@@ -46,13 +52,11 @@ public class GameWindow extends JPanel implements ActionListener{
 
 		getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0),"down" );
 		getActionMap().put("down", new KeyAction("down"));
-
-		Timer = new Timer(Const.Ticks, this);
+		Timer = new Timer(Const.DELAY, this);
 		Timer.start();
 	}
 
 	private class KeyAction extends AbstractAction {
-
 		String Key ;
 		public KeyAction (String s) {
 			Key = s;
@@ -93,47 +97,94 @@ public class GameWindow extends JPanel implements ActionListener{
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		
-		Snake Snake = World.getSnake();
+	
+		if (Const.TRAINING_MODE) {
+			g.setColor(Color.WHITE);
+			g.setFont(new Font(Font.DIALOG, Font.BOLD, Const.SCOREFONTSIZE));
+			g.drawString("Generation: " + World.getGeneration(), 25, 25);
 
-		g.setColor(Color.GREEN);
-		Deque<Point> body = Snake.getBody();
-		for (Point p : body) {
-			g.fillRect(p.x*Const.Block, p.y*Const.Block, Const.Block-1,  Const.Block-1);
+			for (int i = 0; i < World.AllPopulations.length; i++) {
+				String Alive = Integer.toString((World.AllPopulations[i].numAlive()));
+				String BestScore = Integer.toString(World.AllPopulations[i].getBestScore());
+				g.drawString("Number Alive: " + Alive, 25, 50);
+				g.drawString("Best Score: " + BestScore, 25, 75);
+			}
+			// always paints the current best snake
+			Snake s = World.findCurrentBest();
+			drawSnake(g, s);
+			drawFood(g, s.getFood());
+
+	
+		} else {
+			Snake Snake = World.getSnake();
+			
+			drawSnake(g, Snake);
+
+			Food Food = World.getFood();
+			drawFood(g, Food);
+			
+			String Score = Integer.toString(Snake.getBody().size() + 1);
+			g.setColor(Color.WHITE);
+			g.setFont(new Font(Font.DIALOG, Font.BOLD, Const.SCOREFONTSIZE));
+			g.drawString("Score: " + Score, 25, 25);
+			
+			String LifeTime = Integer.toString(Snake.getLifeTime());
+			g.drawString("Game ticks: " + LifeTime, 25, 50);
+
+			DecimalFormat df = new DecimalFormat("#.##");
+			String Time = df.format(Snake.calcFitness());
+			g.drawString("Fitness: " + Time, 25, 75);
 		}
-
-		g.setColor(Color.RED);
-		g.fillRect(Snake.getHead().x*Const.Block, Snake.getHead().y*Const.Block -1 , Const.Block -1, Const.Block-1);
-		
-		Food Food = World.getFood();
-		g.setColor(Food.getColor());
-		g.fillRect((int)Food.getX()*Const.Block, (int)Food.getY()*Const.Block, Const.Block, Const.Block);
-		
-		String Score = World.getScore();
-		g.setColor(Color.WHITE);
-		g.setFont(new Font(Font.DIALOG, Font.BOLD, 30));
-		g.drawString(Score, Const.Block*2, Const.Block);
 
 		Toolkit.getDefaultToolkit().sync();
 	}
 	
 	@Override 
 	public void actionPerformed(ActionEvent e) {
-		// if collision is detected, stop
-		if (World.isGameOver() == true) {
-			Timer.stop();
-		}
-		else if (World.isPaused()) {
+		if (Const.TRAINING_MODE) {
+			if (World.getGeneration() < Const.GENERATIONS) {
+				if (World.allPopulationsDead()) {
+					World.geneticAlgo();
+				}
+				else {
+					World.go();
+					repaint();
+				}
+			}
 		}
 		else {
-			World.move();
-			repaint();
+			// if collision is detected, stop
+			if (World.isGameOver() == true) {
+				Timer.stop();
+			}
+			else if (World.isPaused()) {
+
+			}
+			else {
+				World.move();
+				repaint();
+			}
 		}
 	}
 
+	private void drawSnake(Graphics g, Snake s) {
+			g.setColor(Const.SNAKE_COLOR);
+			Deque<Point> body = s.getBody();
+			String str = Integer.toString(s.getScore());
+			for (Point p : body) {
+				g.fillRect(p.x*Const.Block, p.y*Const.Block, Const.Block-1,  Const.Block-1);
+			}
+			g.setColor(Const.SNAKE_HEAD_COLOR);
+			g.fillRect(s.getHead().x*Const.Block, s.getHead().y*Const.Block , Const.Block -1, Const.Block-1);
+			//g.drawString("Fitness: " + s.calcFitness(), 600, 25);
+			g.drawString("Score: " + str, 600, 25);
+	}
 	
-	
-	
+	private void drawFood(Graphics g, Food f) {
+			g.setColor(f.getColor());
+			g.fillRect((int)f.getX()*Const.Block, (int)f.getY()*Const.Block, Const.Block, Const.Block);
+	}
+
 	
 	
 	
