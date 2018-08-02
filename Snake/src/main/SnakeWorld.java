@@ -1,6 +1,9 @@
 package main;
 
 import java.awt.Point;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
@@ -17,6 +20,7 @@ public class SnakeWorld{
 			Const.DIRECTION.LEFT, Const.DIRECTION.DOWN };
 	
 	Population AllPopulations[];
+	Snake AlphaPrime;
 	
 	boolean GameOver;
 	boolean Pause;
@@ -56,6 +60,7 @@ public class SnakeWorld{
 		for (int i = 0; i < pop; i++) {
 			AllPopulations[i] = new Population(snakes);
 		}
+		AlphaPrime = AllPopulations[0].getAlpha();
 	}
 
 	public boolean isValid(int x, int y) {
@@ -149,10 +154,28 @@ public class SnakeWorld{
 	}
 
 	public void geneticAlgo() {
+		double maxi = 0;
 		for (int i = 0; i < Const.NUMBER_OF_POPULATIONS; i++){
 			AllPopulations[i].geneticAlgo();
+			if (maxi < AllPopulations[i].getAlpha().getFitness()) {
+				maxi = AllPopulations[i].getAlpha().getFitness();
+				AlphaPrime = AllPopulations[i].getAlpha();
+			}
 		}
 		GenerationNumber++;
+		
+		try {
+			FileOutputStream file = new FileOutputStream(Const.FILENAME);
+			ObjectOutputStream out = new ObjectOutputStream(file);
+			
+			out.writeObject(AlphaPrime.getBrain());
+			out.close();
+			file.close();
+
+			System.out.println("Generation: " + GenerationNumber + "AlphaPrime successfully written");
+		} catch (IOException e) {
+			System.out.println(e + "Error writing file to alphaprime");
+		}
 	}
 	
 	int getGeneration() { return GenerationNumber; }

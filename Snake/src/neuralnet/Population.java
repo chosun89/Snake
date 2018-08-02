@@ -12,7 +12,7 @@ public class Population {
 	int NumAlive;
 	double TotalFitness;
 	Snake Alpha;
-	Snake BestAlive;
+	Snake CurrentBestAlive;
 	int BestScore;
 	
 	public Population(int n) {
@@ -22,7 +22,8 @@ public class Population {
 		for (int i = 0; i < n; i++) {
 			AllSnakes[i] = new Snake(Const.TRAINING_MODE);
 		}
-		BestAlive = AllSnakes[0];
+		CurrentBestAlive = AllSnakes[0];
+		Alpha = CurrentBestAlive;
 		NumAlive = n;
 	}
 	
@@ -38,7 +39,7 @@ public class Population {
 					BestScore = AllSnakes[i].getScore();
 				}
 				if (AllSnakes[i].calcFitness() > maxi) {
-					BestAlive = AllSnakes[i];
+					CurrentBestAlive = AllSnakes[i];
 					maxi = AllSnakes[i].getFitness();
 				}
 				AllSnakes[i].setInputLayer();
@@ -48,7 +49,7 @@ public class Population {
 	}
 	
 	public Snake getCurrentBest () {
-		return BestAlive;
+		return CurrentBestAlive;
 	}
 	
 	// returns true if all Snakes in the pop are in a dead state

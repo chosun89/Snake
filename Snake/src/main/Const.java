@@ -3,7 +3,7 @@ package main;
 import java.awt.Color;
 
 public class Const {
-	public static final int Block = 25;
+	public static final int Block = 10;
 	public static final int BOARD_HEIGHT = 950; 
 	public static final int BOARD_WIDTH = 950; 
 	public static final int ROWS = BOARD_HEIGHT / Block;
@@ -21,9 +21,7 @@ public class Const {
 	public static final boolean BFS_MODE = true;
 
 	// 12 for 4 Directions x 3 types (food,body,wall)
-	// + BRxBC for subarray food
-	// + 1 for distance to food
-	public static final int INPUT_LAYERS = 12 + BIG_COLS*BIG_COLS + 1;
+	public static final int INPUT_LAYERS = 12; 
 	public static final int HIDDEN_LAYERS = 13;
 	public static final int OUTPUT_LAYERS = 4;
 	
@@ -34,6 +32,7 @@ public class Const {
 	public static final int MOVES_TO_LIVE = COLS*4; 
 	static final int DELAY = 0; // in milli seconds
 
+	public static final String FILENAME = "C:\\Users\\ahnje\\Snake\\git\\Snake\\src\\neuralnet\\AlphaPrime.ser";
 
 	public enum BOARD_VALUE { SPACE , HEAD, BODY, FOOD };
 	public enum DIRECTION { 

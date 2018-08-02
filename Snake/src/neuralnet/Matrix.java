@@ -1,8 +1,13 @@
 package neuralnet;
+import java.io.Serializable;
 import java.util.Random;
 
-public class Matrix {
+public class Matrix implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3592842365922491908L;
 	private int rows;
 	private int cols;
 	private float matrix[][];

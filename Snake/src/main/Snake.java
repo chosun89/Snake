@@ -72,14 +72,6 @@ public class Snake {
 		InputLayer[10] = down[1];
 		InputLayer[11] = down[2];
 		
-		int bx = Food.x/Const.BIG_COLS/Const.COLS;
-		int by = Food.y/Const.BIG_ROWS/Const.ROWS;
-		
-		// tell snake which subarray food exists
-		InputLayer[12 + bx*Const.BIG_COLS + by] = 1;
-
-		InputLayer[Const.INPUT_LAYERS - 1] = (float)(distance(Food, Head)/(Const.ROWS + Const.COLS));
-
 	}
 	
 	// no arg move method for ai
@@ -280,6 +272,8 @@ public class Snake {
 
 	public Const.DIRECTION getDirection() { return Direction; }
 
+	public NeuralNetwork getBrain() { return Brain; }
+	
 	public Point getHead() { return Head; }
 
 	public Point getFirst() { return Body.peekFirst(); }
@@ -305,39 +299,6 @@ public class Snake {
 		return (BodySet.contains(new Point(Head.x, Head.y)) || Head.x  < 0 || Head.x >= Const.ROWS || Head.y < 0 || Head.y >= Const.COLS);
 	}
 
-	private int distance(Point a, Point b) {
-		int dx = Math.abs(a.x - b.x);
-		int dy = Math.abs(a.y - b.y);
-		return (dx + dy);
-	}
-
-	Const.DIRECTION getRealtiveLeft(Const.DIRECTION d) {
-		if (d == Const.DIRECTION.UP) {
-			return Const.DIRECTION.LEFT;
-		}
-		else if (d == Const.DIRECTION.DOWN) {
-			return Const.DIRECTION.RIGHT;
-		}
-		else if (d == Const.DIRECTION.RIGHT) {
-			return Const.DIRECTION.UP;
-		}
-		else return Const.DIRECTION.DOWN;
-		
-	}
-
-	Const.DIRECTION getRealtiveRight(Const.DIRECTION d) {
-		if (d == Const.DIRECTION.UP) {
-			return Const.DIRECTION.RIGHT;
-		}
-		else if (d == Const.DIRECTION.DOWN) {
-			return Const.DIRECTION.LEFT;
-		}
-		else if (d == Const.DIRECTION.RIGHT) {
-			return Const.DIRECTION.DOWN;
-		}
-		else return Const.DIRECTION.UP;
-		
-	}
 	public Food getFood() { return Food; }
 }
 

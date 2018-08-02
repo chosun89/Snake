@@ -9,7 +9,10 @@ public class NeuralNetwork implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 5284113230493646192L;
+	/**
+	 * 
+	 */
 	private int inputLayers;
 	private int hiddenLayers;
 	private int outputLayers;
@@ -66,8 +69,6 @@ public class NeuralNetwork implements Serializable {
 
 		return res;
 	}
-	
-	
 	
 	
 	
